@@ -5,15 +5,10 @@ using UnityEngine.Tilemaps;
 
 public class MapManager : MonoBehaviour
 {
-    public enum Biomes
-    {
-        Plains,
-        Snow,
-        Sand,
-    };
 
-    public Biomes biome;
+    public Enums.Biomes biome;
     public int brushsize;
+
     [SerializeField]
     private Tilemap map;
 
@@ -50,7 +45,11 @@ public class MapManager : MonoBehaviour
         {
             for (int y = -brushsize; y <= brushsize; y++)
             {
+                if (map.GetTile(new Vector3Int(pos.x + x, pos.y + y, 0)) != null && map.GetTile(new Vector3Int(pos.x + x, pos.y + y, 0)) != tiles[4])
+                {
+
                 map.SetTile(new Vector3Int(pos.x + x, pos.y + y, 0), tile);
+                }
             
             }
         }
@@ -67,14 +66,17 @@ public class MapManager : MonoBehaviour
 
             switch (biome)
             {
-                case Biomes.Plains:
+                case Enums.Biomes.Plains:
                     paint(gridpos, tiles[0]);
                     break;
-                case Biomes.Snow:
+                case Enums.Biomes.Snow:
                     paint(gridpos, tiles[1]);
                     break;
-                case Biomes.Sand:
+                case Enums.Biomes.Sand:
                     paint(gridpos, tiles[2]);
+                    break;
+                case Enums.Biomes.Forest:
+                    paint(gridpos, tiles[3]);
                     break;
             }
             
@@ -82,9 +84,10 @@ public class MapManager : MonoBehaviour
         }
     }
 
-    public TileData getTileData(Vector3Int tilePosition)
-    {
-        TileBase tile = map.GetTile(tilePosition);
+    public TileData getTileData(Vector3 pos)
+    {  
+        Vector3Int gridpos = map.WorldToCell(pos);
+        TileBase tile = map.GetTile(gridpos);
         if (tile == null)
         {
             return null;
@@ -94,5 +97,6 @@ public class MapManager : MonoBehaviour
             return dataFromTiles[tile];
         }
     }
+
 
 }

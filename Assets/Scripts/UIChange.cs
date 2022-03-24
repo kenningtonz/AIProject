@@ -15,11 +15,13 @@ public class UIChange : MonoBehaviour
     public void setBiome(Text biome)
     {
         if (biome.text == "Plains")
-            mapManager.biome = MapManager.Biomes.Plains;
+            mapManager.biome = Enums.Biomes.Plains;
         if (biome.text == "Snow")
-            mapManager.biome = MapManager.Biomes.Snow;
+            mapManager.biome = Enums.Biomes.Snow;
         if (biome.text == "Sand")
-            mapManager.biome = MapManager.Biomes.Sand;
+            mapManager.biome = Enums.Biomes.Sand;
+        if (biome.text == "Forest")
+            mapManager.biome = Enums.Biomes.Forest;
     }
 
     public void setBrushSize(Slider slider)

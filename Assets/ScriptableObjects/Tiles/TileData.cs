@@ -9,9 +9,9 @@ public class TileData : ScriptableObject
 
 
     public TileBase[] tiles;
-    
 
-    public float walkingSpeed;
+    public Enums.Weather weather;
+    public string biome;
 
     
 }

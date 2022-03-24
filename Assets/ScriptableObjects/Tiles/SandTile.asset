@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tiles:
   - {fileID: 11400000, guid: ca7d57b32eab02b4aa825b9428d2974e, type: 2}
-  walkingSpeed: 0
+  biome: Sand

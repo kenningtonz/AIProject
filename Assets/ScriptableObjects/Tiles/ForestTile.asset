@@ -10,8 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cb7a8b4b739c310458917565f94c8578, type: 3}
-  m_Name: GrassTile
+  m_Name: ForestTile
   m_EditorClassIdentifier: 
   tiles:
-  - {fileID: 11400000, guid: 6745b36662cd6ce408cbd959efc89084, type: 2}
-  walkingSpeed: 0
+  - {fileID: 11400000, guid: 9baccc76f43d4cc4fb014dad8cfc19a1, type: 2}
+  weather: 2
+  biome: Forest
