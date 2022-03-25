@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Animal
   - boundry
+  - Food
   layers:
   - Default
   - TransparentFX

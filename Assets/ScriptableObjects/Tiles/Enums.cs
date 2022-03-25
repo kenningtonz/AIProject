@@ -5,6 +5,13 @@ using UnityEngine;
 
 public static class Enums
 {
+
+    public enum Action
+    {
+        Paint,
+        Spawn,
+    }
+
     public enum Biomes
     {
         Plains,

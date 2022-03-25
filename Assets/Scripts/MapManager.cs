@@ -9,6 +9,8 @@ public class MapManager : MonoBehaviour
     public Enums.Biomes biome;
     public int brushsize;
 
+    public Enums.Action action;
+
     [SerializeField]
     private Tilemap map;
 
@@ -16,7 +18,8 @@ public class MapManager : MonoBehaviour
     private List<TileData> tileDatas;
 
     public TileBase[] tiles;
-   
+
+    public int gameSpeed = 1;
 
     //public TileBase grassTile;
     private Dictionary<TileBase, TileData> dataFromTiles;
@@ -58,7 +61,9 @@ public class MapManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButton(0))
+        //Time.timeScale = gameSpeed;
+
+        if (Input.GetMouseButton(0) && action == Enums.Action.Paint)
         {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             

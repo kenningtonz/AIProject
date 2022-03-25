@@ -7,9 +7,10 @@ using UnityEngine.Tilemaps;
 public class Animals : MonoBehaviour
 {
     private MapManager mapManager;
-    private float moveTime = 10f;
-    private float moveCounter;
+    public float moveTime = 5f;
+    public float moveCounter;
     private TileBase currentTile;
+    public GameObject senseRadius;
 
     public Sprite sprite;
     //public int[] attributes;
@@ -19,19 +20,24 @@ public class Animals : MonoBehaviour
     public int m_belly;
     public int m_foreging;
 
+
+    public Quaternion lookRotation;
+
+    public int food;
+
     private int weatherSpeed = 0;
     private int weatherSense = 0;
 
     public Enums.AnimalWarmth m_animalWarmth;
 
-    public void init(int fertility, int speed, int sense, int belly, int foregeing, Enums.AnimalWarmth animalWarmth)
+    public void init(int fertility, int speed, int sense, int belly, int foregeing, int animalWarmth)
     {
         m_fertility = fertility;
         m_speed = speed;
         m_sense = sense;
         m_belly = belly;
         m_foreging = foregeing;
-        m_animalWarmth = animalWarmth;
+        m_animalWarmth = (Enums.AnimalWarmth)animalWarmth;
 
     }
 
@@ -40,17 +46,21 @@ public class Animals : MonoBehaviour
         mapManager = FindObjectOfType<MapManager>();
         moveCounter = moveTime;
         currentTile = mapManager.getTileData(transform.position).tiles[0];
-    }
+}
+
     private void Update()
     {
+        senseRadius.GetComponent<CircleCollider2D>().radius = m_sense + weatherSense;
         moveCounter -= Time.deltaTime;
-     if (moveCounter <= 0)
+
+
+        if (moveCounter <= 0)
         {
             moveCounter = moveTime;
-            float newRotation = Random.Range(0f, 360f);
-            transform.rotation = Quaternion.Euler(0f, 0f, newRotation);
-
+            lookRotation = Quaternion.Euler(0f, 0f, Random.Range(0f, 360f));
+            Debug.Log(lookRotation);
         }
+            transform.rotation = lookRotation;
         transform.position += transform.up * Time.deltaTime * (m_speed + weatherSpeed);
 
         if (mapManager.getTileData(transform.position).tiles[0] != currentTile)
@@ -65,12 +75,12 @@ public class Animals : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision)
     {
 
-        if (collision.gameObject.tag == "bpundry")
+        if (collision.gameObject.tag == "boundry")
             {
-            Debug.Log("collided");
-            float newRotation = Random.Range(0f, 360f);
-                transform.rotation = Quaternion.Euler(0f, 0f, newRotation);
-            }
+            lookRotation = Quaternion.Euler(0f, 0f, Random.Range(0f, 360f));
+            //transform.rotation = lookRotation;
+            //Debug.Log(lookRotation);
+        }
     }
 
 

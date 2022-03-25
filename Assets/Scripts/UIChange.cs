@@ -9,7 +9,8 @@ public class UIChange : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        mapManager = GetComponent<MapManager>();
+        mapManager = FindObjectOfType<MapManager>();
+      
     }
 
     public void setBiome(Text biome)
@@ -29,10 +30,30 @@ public class UIChange : MonoBehaviour
         mapManager.brushsize = (int)slider.value;
     }
 
+    public void setAction(Text action)
+    {
+        if (action.text == "Paint")
+            mapManager.action = Enums.Action.Paint;
+        if (action.text == "Spawn")
+            mapManager.action = Enums.Action.Spawn;
+
+    }
+
+    public void setGameSpeed(Slider slider)
+    {
+        mapManager.gameSpeed = (int)slider.value;
+    }
 
     // Update is called once per frame
     void Update()
     {
-
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            mapManager.action = Enums.Action.Paint;
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            mapManager.action = Enums.Action.Spawn;
+        }
     }
 }
