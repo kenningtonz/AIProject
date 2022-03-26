@@ -8,7 +8,7 @@ public class Sense : MonoBehaviour
     {
         if (collision.gameObject.tag == "Food")
         {
-          
+
             Vector3 targ = collision.gameObject.transform.position;
             //print(targ);
             targ.z = 0f;

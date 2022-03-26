@@ -62,9 +62,6 @@ public class AnimalSpawner : MonoBehaviour
             a_warmth.Add(warmval);
             livinganimals.Add(animal);
 
-
-
-
         }
         else if (gameManager.itsDay)
         {
