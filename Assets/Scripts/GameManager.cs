@@ -4,6 +4,7 @@ using UnityEngine.UI;
 public class GameManager : MonoBehaviour
 {
     private FoodSpawner foodSpawner;
+    private AnimalSpawner animalSpawner;
     public bool itsDay = false;
     public int gameSpeed = 1;
 
@@ -15,21 +16,25 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         foodSpawner = FindObjectOfType<FoodSpawner>();
+        animalSpawner = FindObjectOfType<AnimalSpawner>();
         action = Enums.Action.Nothing;
     }
 
     public void newDay()
     {
-        itsDay = true;
-       
         foodSpawner.spawnFood();
+        for (int c = 0; c < animalSpawner.livinganimals.Count; c++)
+        {
+            animalSpawner.livinganimals[c].GetComponent<Animals>().newDay();
+                }
+        itsDay = true;
     }
 
 
     // Update is called once per frame
     void Update()
     {
-        //Time.timeScale = gameSpeed;
+     Time.timeScale = gameSpeed;
 
 
         if (foodSpawner.availableFood.Count == 0)

@@ -54,6 +54,12 @@ public class Animals : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
     }
 
+    public void eat()
+    {
+        food = food + m_foreging;
+        print(food);
+    }
+
     private void Update()
     {
         senseRadius.GetComponent<CircleCollider2D>().radius = m_sense + weatherSense;
@@ -86,11 +92,6 @@ public class Animals : MonoBehaviour
         if(food > m_belly)
         {
             food = m_belly;
-        }
-
-        if (gameManager.itsDay == false)
-        {
-            newDay();
         }
 
     }

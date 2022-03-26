@@ -14,11 +14,12 @@ public class Food : MonoBehaviour
     {
         if (collision.gameObject.tag == "Animal")
         {
-            
-            collision.gameObject.GetComponent<Animals>().food = collision.gameObject.GetComponent<Animals>().food + collision.gameObject.GetComponent<Animals>().m_foreging;
+            collision.gameObject.GetComponent<Animals>().eat();
+           // collision.gameObject.GetComponent<Animals>().food = collision.gameObject.GetComponent<Animals>().food + collision.gameObject.GetComponent<Animals>().m_foreging;
             foodSpawner.availableFood.Remove(gameObject);
             collision.gameObject.GetComponent<Animals>().moveCounter = collision.gameObject.GetComponent<Animals>().moveTime;
             Destroy(gameObject);
+            
             print("yum");
         }
     }
