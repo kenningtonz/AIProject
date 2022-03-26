@@ -7,11 +7,15 @@ using UnityEngine.Tilemaps;
 public class Animals : MonoBehaviour
 {
     private MapManager mapManager;
-    public float moveTime = 5f;
-    public float moveCounter;
+    private float moveTime = 10f;
+    private float moveCounter;
     private TileBase currentTile;
-    public GameObject senseRadius;
+<<<<<<< Updated upstream
 
+=======
+    public GameObject senseRadius;
+    
+>>>>>>> Stashed changes
     public Sprite sprite;
     //public int[] attributes;
     public int m_fertility;
@@ -19,25 +23,22 @@ public class Animals : MonoBehaviour
     public int m_sense;
     public int m_belly;
     public int m_foreging;
-
-
-    public Quaternion lookRotation;
-
-    public int food;
+    public bool readytochild = false;
+    public bool nsff = false;
 
     private int weatherSpeed = 0;
     private int weatherSense = 0;
 
     public Enums.AnimalWarmth m_animalWarmth;
 
-    public void init(int fertility, int speed, int sense, int belly, int foregeing, int animalWarmth)
+    public void init(int fertility, int speed, int sense, int belly, int foregeing, Enums.AnimalWarmth animalWarmth)
     {
         m_fertility = fertility;
         m_speed = speed;
         m_sense = sense;
         m_belly = belly;
         m_foreging = foregeing;
-        m_animalWarmth = (Enums.AnimalWarmth)animalWarmth;
+        m_animalWarmth = animalWarmth;
 
     }
 
@@ -46,22 +47,30 @@ public class Animals : MonoBehaviour
         mapManager = FindObjectOfType<MapManager>();
         moveCounter = moveTime;
         currentTile = mapManager.getTileData(transform.position).tiles[0];
-}
-
+    }
     private void Update()
     {
-        senseRadius.GetComponent<CircleCollider2D>().radius = m_sense + weatherSense;
         moveCounter -= Time.deltaTime;
-
-
-        if (moveCounter <= 0)
+<<<<<<< Updated upstream
+     if (moveCounter <= 0)
         {
             moveCounter = moveTime;
-            lookRotation = Quaternion.Euler(0f, 0f, Random.Range(0f, 360f));
-            Debug.Log(lookRotation);
+            float newRotation = Random.Range(0f, 360f);
+            transform.rotation = Quaternion.Euler(0f, 0f, newRotation);
+
         }
-            transform.rotation = lookRotation;
         transform.position += transform.up * Time.deltaTime * (m_speed + weatherSpeed);
+=======
+
+        //if (moveCounter <= 0)
+        //{
+        //    moveCounter = moveTime;
+        //    lookRotation = Quaternion.Euler(0f, 0f, Random.Range(0f, 360f));
+        //    Debug.Log(lookRotation);
+        //}
+        //    transform.rotation = lookRotation;
+        //transform.position += transform.up * Time.deltaTime * (m_speed + weatherSpeed);
+>>>>>>> Stashed changes
 
         if (mapManager.getTileData(transform.position).tiles[0] != currentTile)
         {
@@ -75,14 +84,48 @@ public class Animals : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision)
     {
 
-        if (collision.gameObject.tag == "boundry")
+        if (collision.gameObject.tag == "bpundry")
             {
-            lookRotation = Quaternion.Euler(0f, 0f, Random.Range(0f, 360f));
-            //transform.rotation = lookRotation;
-            //Debug.Log(lookRotation);
-        }
+            Debug.Log("collided");
+            float newRotation = Random.Range(0f, 360f);
+                transform.rotation = Quaternion.Euler(0f, 0f, newRotation);
+            }
     }
+    public bool EatFoodOutsideBiome(Enums.Biomes biome, Enums.AnimalWarmth warmth, int speed, int sense, int food)
+    {
+        int threshold = 0;
+        //Threshold: Can/should I get this food?
+        //Is biome safe? 2
+        //What is my speed/sense ratio? Can I get the food fast? 4
+        //Am I starving? 6
+        //5-: don't eat, 6+ eat
+        if (!nsff)
+        {
+            threshold += 2;
+        }
 
+        if (speed > sense)
+        {
+            threshold += 4;
+        }
+
+        if (food <= 1)
+        {
+            threshold += 6;
+        }
+
+        if (threshold <= 5)
+        {
+            return false;
+        }
+        return true;
+    }
+    public bool TakeRisks()
+    {
+        //Threshold: Am I hungry enough to take risks?
+        //2-: no risks, 3+ take risks
+        return false;
+    }
 
     public void BodyCheck(Enums.AnimalWarmth warmth, Enums.Weather weather)
     {
@@ -91,6 +134,7 @@ public class Animals : MonoBehaviour
         {
             weatherSense = 1;
             weatherSpeed = 1;
+            nsff = false;
         }
         else if ((warmth == Enums.AnimalWarmth.Fur && weather == Enums.Weather.Chilly)
                    || (warmth == Enums.AnimalWarmth.Smooth && weather == Enums.Weather.Cold)
@@ -99,24 +143,28 @@ public class Animals : MonoBehaviour
         {
             weatherSense = 0;
             weatherSpeed = 0;
+            nsff = false;
         }
         else if((warmth == Enums.AnimalWarmth.Smooth && weather == Enums.Weather.Warm)
             || (warmth == Enums.AnimalWarmth.Feathers && weather == Enums.Weather.Chilly))
         {
             weatherSpeed = -1;
             weatherSense = 0;
+            nsff = true;
         }
         else if ((warmth == Enums.AnimalWarmth.Feathers && weather == Enums.Weather.Warm)
           || (warmth == Enums.AnimalWarmth.Smooth && weather == Enums.Weather.Chilly))
         {
             weatherSpeed = 1;
             weatherSense = 0;
+            nsff = false;
         }
         else
         {
             Debug.Log(warmth);
             Debug.Log(weather);
             Destroy(gameObject);
+            nsff = true;
         }
     }
 }
