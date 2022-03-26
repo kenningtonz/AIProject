@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -7,6 +5,9 @@ using UnityEngine.Tilemaps;
 public class Animals : MonoBehaviour
 {
     private MapManager mapManager;
+    private GameManager gameManager;
+    private AnimalSpawner animalSpawner;
+
     public float moveTime = 5f;
     public float moveCounter;
     private TileBase currentTile;
@@ -22,12 +23,14 @@ public class Animals : MonoBehaviour
 
 
     public Quaternion lookRotation;
-
+    public Vector3 direction;
     public int food;
 
     private int weatherSpeed = 0;
     private int weatherSense = 0;
-
+    public bool foundFood = false;
+    public bool readytochild = false;
+    private Rigidbody2D rb;
     public Enums.AnimalWarmth m_animalWarmth;
 
     public void init(int fertility, int speed, int sense, int belly, int foregeing, int animalWarmth)
@@ -46,43 +49,73 @@ public class Animals : MonoBehaviour
         mapManager = FindObjectOfType<MapManager>();
         moveCounter = moveTime;
         currentTile = mapManager.getTileData(transform.position).tiles[0];
-}
+        gameManager = FindObjectOfType<GameManager>();
+        animalSpawner = FindObjectOfType<AnimalSpawner>();
+        rb = GetComponent<Rigidbody2D>();
+    }
 
     private void Update()
     {
         senseRadius.GetComponent<CircleCollider2D>().radius = m_sense + weatherSense;
-        moveCounter -= Time.deltaTime;
-
-
-        if (moveCounter <= 0)
+        if (gameManager.itsDay == true)
         {
-            moveCounter = moveTime;
-            lookRotation = Quaternion.Euler(0f, 0f, Random.Range(0f, 360f));
-            Debug.Log(lookRotation);
-        }
-            transform.rotation = lookRotation;
-        transform.position += transform.up * Time.deltaTime * (m_speed + weatherSpeed);
+            moveCounter -= Time.deltaTime;
 
-        if (mapManager.getTileData(transform.position).tiles[0] != currentTile)
-        {
-            Debug.Log("changed");
-            currentTile = mapManager.getTileData(transform.position).tiles[0];
-            BodyCheck(m_animalWarmth, mapManager.getTileData(transform.position).weather);
-        }
-
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-
-        if (collision.gameObject.tag == "boundry")
+            if (moveCounter <= 0)
             {
-            lookRotation = Quaternion.Euler(0f, 0f, Random.Range(0f, 360f));
-            //transform.rotation = lookRotation;
-            //Debug.Log(lookRotation);
+                moveCounter = moveTime;
+                lookRotation = Quaternion.Euler(0f, 0f, Random.Range(0f, 360f));
+                //Debug.Log(lookRotation);
+            }
+            // rb.AddForce(transform.up * Time.deltaTime * (m_speed + weatherSpeed ) * 100);
+          //  rb.MoveRotation(lookRotation);
+          //  rb.MovePosition(rb.position * Time.deltaTime * (m_speed + weatherSpeed));
+           transform.rotation = lookRotation;
+           transform.position += transform.up * Time.deltaTime * (m_speed + weatherSpeed);
+            
+
+            if (mapManager.getTileData(transform.position).tiles[0] != currentTile)
+            {
+              
+                currentTile = mapManager.getTileData(transform.position).tiles[0];
+                BodyCheck(m_animalWarmth, mapManager.getTileData(transform.position).weather);
+            }
+
         }
+
+        if(food > m_belly)
+        {
+            food = m_belly;
+        }
+
+        if (gameManager.itsDay == false)
+        {
+            newDay();
+        }
+
     }
 
+
+
+    public void newDay()
+    {
+        if (food > 1)
+        {
+            readytochild = true;
+            food -= 1;
+        }
+
+
+        if (food == 0)
+        {
+            animalSpawner.livinganimals.Remove(gameObject);
+            print("death by food");
+            Destroy(gameObject);
+        }
+
+        food--;
+
+    }
 
     public void BodyCheck(Enums.AnimalWarmth warmth, Enums.Weather weather)
     {
@@ -100,7 +133,7 @@ public class Animals : MonoBehaviour
             weatherSense = 0;
             weatherSpeed = 0;
         }
-        else if((warmth == Enums.AnimalWarmth.Smooth && weather == Enums.Weather.Warm)
+        else if ((warmth == Enums.AnimalWarmth.Smooth && weather == Enums.Weather.Warm)
             || (warmth == Enums.AnimalWarmth.Feathers && weather == Enums.Weather.Chilly))
         {
             weatherSpeed = -1;
@@ -114,9 +147,9 @@ public class Animals : MonoBehaviour
         }
         else
         {
-            Debug.Log(warmth);
-            Debug.Log(weather);
-            Destroy(gameObject);
+            //print("death by biome");
+           // animalSpawner.livinganimals.Remove(gameObject);
+          //  Destroy(gameObject);
         }
     }
 }
