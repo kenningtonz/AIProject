@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -13,5 +11,5 @@ public class TileData : ScriptableObject
     public Enums.Weather weather;
     public string biome;
 
-    
+
 }

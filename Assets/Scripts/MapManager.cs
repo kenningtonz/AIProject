@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -8,18 +7,14 @@ public class MapManager : MonoBehaviour
 
     public Enums.Biomes biome;
     public int brushsize;
+    public GameManager gameManager;
 
-    public Enums.Action action;
 
     [SerializeField]
     private Tilemap map;
-
     [SerializeField]
     private List<TileData> tileDatas;
-
     public TileBase[] tiles;
-
-    public int gameSpeed = 1;
 
     //public TileBase grassTile;
     private Dictionary<TileBase, TileData> dataFromTiles;
@@ -39,6 +34,7 @@ public class MapManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        gameManager = FindObjectOfType<GameManager>();
         map.CompressBounds();
     }
 
@@ -51,22 +47,23 @@ public class MapManager : MonoBehaviour
                 if (map.GetTile(new Vector3Int(pos.x + x, pos.y + y, 0)) != null && map.GetTile(new Vector3Int(pos.x + x, pos.y + y, 0)) != tiles[4])
                 {
 
-                map.SetTile(new Vector3Int(pos.x + x, pos.y + y, 0), tile);
+                    map.SetTile(new Vector3Int(pos.x + x, pos.y + y, 0), tile);
                 }
-            
+
             }
         }
     }
 
+
     // Update is called once per frame
     void Update()
     {
-        //Time.timeScale = gameSpeed;
 
-        if (Input.GetMouseButton(0) && action == Enums.Action.Paint)
+
+        if (Input.GetMouseButton(0) && gameManager.action == Enums.Action.Paint)
         {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            
+
             Vector3Int gridpos = map.WorldToCell(mousePos);
 
             switch (biome)
@@ -84,13 +81,13 @@ public class MapManager : MonoBehaviour
                     paint(gridpos, tiles[3]);
                     break;
             }
-            
+
 
         }
     }
 
     public TileData getTileData(Vector3 pos)
-    {  
+    {
         Vector3Int gridpos = map.WorldToCell(pos);
         TileBase tile = map.GetTile(gridpos);
         if (tile == null)

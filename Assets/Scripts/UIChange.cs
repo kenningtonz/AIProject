@@ -1,16 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class UIChange : MonoBehaviour
 {
     private MapManager mapManager;
+    private GameManager gameManager;
+    private FoodSpawner foodSpawner;
     // Start is called before the first frame update
     void Start()
     {
         mapManager = FindObjectOfType<MapManager>();
-      
+        gameManager = FindObjectOfType<GameManager>();
+        foodSpawner = FindObjectOfType<FoodSpawner>();
     }
 
     public void setBiome(Text biome)
@@ -33,27 +34,46 @@ public class UIChange : MonoBehaviour
     public void setAction(Text action)
     {
         if (action.text == "Paint")
-            mapManager.action = Enums.Action.Paint;
+            gameManager.action = Enums.Action.Paint;
         if (action.text == "Spawn")
-            mapManager.action = Enums.Action.Spawn;
+            gameManager.action = Enums.Action.Spawn;
 
+    }
+
+    public void startDay(Button button)
+    {
+        gameManager.newDay();
+        Debug.Log("startay");
+        button.interactable = false;
     }
 
     public void setGameSpeed(Slider slider)
     {
-        mapManager.gameSpeed = (int)slider.value;
+        gameManager.gameSpeed = (int)slider.value;
     }
+
+    public void setNumOfFood(Slider slider)
+    {
+        Debug.Log("chaged");
+        foodSpawner.numOfFood = (int)slider.value;
+    }
+
 
     // Update is called once per frame
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            mapManager.action = Enums.Action.Paint;
+            gameManager.action = Enums.Action.Paint;
         }
+        
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            mapManager.action = Enums.Action.Spawn;
+            gameManager.action = Enums.Action.Spawn;
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            gameManager.action = Enums.Action.Nothing;
         }
     }
 }

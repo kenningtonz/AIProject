@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4753860241050014418}
   - component: {fileID: 6572562766399204919}
   - component: {fileID: 858323397863290708}
-  - component: {fileID: 2801114082065681729}
+  - component: {fileID: -8491802298027916041}
   m_Layer: 0
   m_Name: Animal
   m_TagString: Animal
@@ -98,6 +98,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69aa89c41810b3245a29c969d480086e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  moveTime: 5
+  moveCounter: 0
   senseRadius: {fileID: 6241161861697362442}
   sprite: {fileID: 0}
   m_fertility: 0
@@ -106,7 +108,10 @@ MonoBehaviour:
   m_belly: 0
   m_foreging: 0
   lookRotation: {x: 0, y: 0, z: 0, w: 0}
+  direction: {x: 0, y: 0, z: 0}
   food: 0
+  foundFood: 0
+  readytochild: 0
   m_animalWarmth: 0
 --- !u!61 &858323397863290708
 BoxCollider2D:
@@ -134,7 +139,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!50 &2801114082065681729
+--- !u!50 &-8491802298027916041
 Rigidbody2D:
   serializedVersion: 4
   m_ObjectHideFlags: 0
@@ -145,15 +150,15 @@ Rigidbody2D:
   m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
+  m_UseAutoMass: 1
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 0
   m_Material: {fileID: 0}
-  m_Interpolate: 0
+  m_Interpolate: 2
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!1 &6241161861697362442
 GameObject:
