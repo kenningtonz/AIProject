@@ -9,17 +9,14 @@ public class Sense : MonoBehaviour
 
         if (collision.gameObject.tag == "Food")
         {
-
-            Vector3 targ = collision.gameObject.transform.position;
-            //print(targ);
-            targ.z = 0f;
-
-            bool temp = parent.GetComponent<Animals>().EatFoodOutsideBiome(collision.gameObject.GetComponent<Food>().weather);
-
-            //collision.gameObject.GetComponent<Food>().weather;
-
-            if (temp)
+            //Checks a Neural Network to determine if the animal will change biomes to go after food.
+            if (parent.GetComponent<Animals>().EatFoodOutsideBiome(collision.gameObject))
             {
+                //Marks the food as a target to approach
+                Vector3 targ = collision.gameObject.transform.position;
+                targ.z = 0f;
+
+                //Determines angle between self and the food and them changes course to go straight for the food.
                 Vector3 objectPos = parent.transform.position;
                 targ.x = targ.x - objectPos.x;
                 targ.y = targ.y - objectPos.y;

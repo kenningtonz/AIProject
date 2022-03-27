@@ -13,6 +13,7 @@ public class AnimalSpawner : MonoBehaviour
     public List<int> a_foraging;
     public List<int> a_warmth;
     public List<GameObject> livinganimals;
+
     public int fertval;
     public int speedval;
     public int bellyval;
@@ -31,6 +32,11 @@ public class AnimalSpawner : MonoBehaviour
     private int MAX_Y = 13;
     private int MIN_Y = -11;
 
+    public Sprite coatFur;
+    public Sprite coatSmooth;
+    public Sprite coatFeather;
+    public Sprite coatScale;
+
 
     // Start is called before the first frame update
     void Start()
@@ -40,6 +46,7 @@ public class AnimalSpawner : MonoBehaviour
 
     void CheckStats()
     {
+        //Ensures all the stats don't go over their capacity
         if (fertval > MAX_FERT)
             fertval = MAX_FERT;
         if (bellyval > MAX_BELLY)
@@ -50,6 +57,44 @@ public class AnimalSpawner : MonoBehaviour
             speedval = MAX_SPEED;
         if (forgval > MAX_FORGE)
             forgval = MAX_FORGE;
+    }
+
+    private Sprite CoatType()
+    {
+        switch(warmval)
+        {
+            case 0:
+                return coatFur;
+            case 1:
+                return coatSmooth;
+            case 2:
+                return coatFeather;
+            case 3:
+                return coatScale;
+        }
+
+        return coatFur;
+    }
+
+    private Color32 Colour()
+    {
+        //Setting colours according to their stat values
+        int redVal = fertval;
+        int greenVal = forgval;
+        int blueVal = bellyval;
+        int alphaVal = speedval;
+        int colourMod = 3;
+
+        if (fertval < 0)
+            redVal = 0;
+        if (forgval < 0)
+            greenVal = 0;
+        if (bellyval < 0)
+            blueVal = 0;
+        if (speedval < 0)
+            alphaVal = 0;
+
+        return new Color32((byte)(colourMod * alphaVal * (255 / MAX_SPEED)), (byte)(colourMod * greenVal * (255 / MAX_FORGE)), (byte)(colourMod * blueVal * (255 / MAX_BELLY)), (byte)(255 - (redVal * (100 / MAX_FERT))));
     }
 
     // Update is called once per frame
@@ -73,6 +118,11 @@ public class AnimalSpawner : MonoBehaviour
             speedval = Random.Range(1, 6);
             forgval = Random.Range(1, 3);
             warmval = Random.Range(0, 3);
+
+            //Setting the visuals
+            animal.GetComponent<SpriteRenderer>().sprite = CoatType();
+            animal.GetComponent<SpriteRenderer>().color = Colour();
+
             animal.GetComponent<Animals>().init(fertval, speedval, senseval, bellyval, forgval, warmval);
             //a_fertility.Add(fertval);
             //a_belly.Add(bellyval);
@@ -92,20 +142,24 @@ public class AnimalSpawner : MonoBehaviour
                 {
                     if (parent.GetComponent<Animals>().readytochild)
                     {
+                        //Number of babies ranges between 1 and fertility level, the higher it is, the higher the chance of more babies,
+                        //(if negative) the lower, the higher the chance of no babies.
                         int numberOfBabies = Random.Range(1, parent.GetComponent<Animals>().m_fertility);
 
                         for (int b = 0; b < numberOfBabies; b++)
                         {
                             GameObject child = Instantiate(prefab, new Vector3(parent.transform.position.x, parent.transform.position.y, 0), Quaternion.identity);
                             Debug.Log("born");
+                            //Babies copy the stats of their parents and roll for a chance to increase, decrease or keep the stats.
                             fertval = parent.GetComponent<Animals>().m_fertility + Random.Range(-1, 2);
                             bellyval = parent.GetComponent<Animals>().m_belly + Random.Range(-1, 2);
                             senseval = parent.GetComponent<Animals>().m_sense + Random.Range(-1, 2);
                             speedval = parent.GetComponent<Animals>().m_speed + Random.Range(-1, 2);
-                            forgval = parent.GetComponent<Animals>().m_foreging + Random.Range(-1, 2);
+                            forgval = parent.GetComponent<Animals>().m_foraging + Random.Range(-1, 2);
 
                             CheckStats();
 
+                            //Checks if the baby is born in an environment that's good for them, if not, rerolls their coat type.
                             if (parent.GetComponent<Animals>().BodyCheck(parent.GetComponent<Animals>().m_animalWarmth, parent.GetComponent<Animals>().GetMap().getTileData(parent.transform.position).weather, false))
                             {
                                 warmval = (int)parent.GetComponent<Animals>().m_animalWarmth;
@@ -115,8 +169,13 @@ public class AnimalSpawner : MonoBehaviour
                                 warmval = Random.Range(0, 4);
                             }
 
+                            //Setting the visuals
+                            child.GetComponent<SpriteRenderer>().sprite = CoatType();
+                            child.GetComponent<SpriteRenderer>().color = Colour();
+                            //Spawns AI with the stuff
                             child.GetComponent<Animals>().init(fertval, speedval, senseval, bellyval, forgval, warmval);
 
+                            //When there's too many animals, kills the oldest one.
                             if (livinganimals.Count > 80)
                             {
                                 GameObject temp = livinganimals[0];

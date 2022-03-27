@@ -22,6 +22,7 @@ public static class Enums
         Cold,
         Chilly,
         Warm,
+        Death,
     };
 
     public enum AnimalWarmth

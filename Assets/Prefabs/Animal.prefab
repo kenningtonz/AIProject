@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 3090582214452733958}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -4.759842, y: 0.45051575, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children:
   - {fileID: 3033467346562792369}
   m_Father: {fileID: 0}
@@ -98,8 +98,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69aa89c41810b3245a29c969d480086e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameManager: {fileID: 0}
   moveTime: 5
   moveCounter: 0
+  currentTile: {fileID: 0}
   senseRadius: {fileID: 6241161861697362442}
   sprite: {fileID: 0}
   m_fertility: 0
@@ -108,10 +110,12 @@ MonoBehaviour:
   m_belly: 0
   m_foreging: 0
   lookRotation: {x: 0, y: 0, z: 0, w: 0}
-  direction: {x: 0, y: 0, z: 0}
   food: 0
   foundFood: 0
   readytochild: 0
+  riskyBoi: 0
+  dying: 0
+  leftBiome: 0
   m_animalWarmth: 0
 --- !u!61 &858323397863290708
 BoxCollider2D:
