@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-[CreateAssetMenu]
+
 public class Animals : MonoBehaviour
 {
     private MapManager mapManager;

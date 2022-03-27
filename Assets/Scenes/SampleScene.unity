@@ -2537,6 +2537,8 @@ MonoBehaviour:
   m_Value: 0
   m_Options:
     m_Options:
+    - m_Text: Nothing
+      m_Image: {fileID: 0}
     - m_Text: Paint
       m_Image: {fileID: 0}
     - m_Text: Spawn
@@ -36446,7 +36448,6 @@ MonoBehaviour:
   itsDay: 0
   gameSpeed: 1
   newDayButton: {fileID: 1406187517}
-  autoStartDay: {fileID: 110694922}
   action: 1
 --- !u!4 &977490079
 Transform:
@@ -37216,7 +37217,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Paint
+  m_Text: Nothing
 --- !u!222 &1164536961
 CanvasRenderer:
   m_ObjectHideFlags: 0

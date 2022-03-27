@@ -37,7 +37,8 @@ public class UIChange : MonoBehaviour
             gameManager.action = Enums.Action.Paint;
         if (action.text == "Spawn")
             gameManager.action = Enums.Action.Spawn;
-
+        if (action.text == "Nothing")
+            gameManager.action = Enums.Action.Nothing;
     }
 
     public void startDay(Button button)
@@ -54,7 +55,6 @@ public class UIChange : MonoBehaviour
 
     public void setNumOfFood(Slider slider)
     {
-        Debug.Log("chaged");
         foodSpawner.numOfFood = (int)slider.value;
     }
 
