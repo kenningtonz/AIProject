@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     public int gameSpeed = 1;
 
     public Button newDayButton;
+    public Toggle autoStartDay;
 
     public Enums.Action action ;
 
@@ -41,6 +42,11 @@ public class GameManager : MonoBehaviour
         {
             itsDay = false;
             newDayButton.interactable = true;
+            if (autoStartDay.isOn && newDayButton.interactable == true)
+            {
+                newDayButton.interactable = false;
+                newDay();
+            }
             //Debug.Log("day end");
 
         }
