@@ -88,7 +88,7 @@ public class AnimalSpawner : MonoBehaviour
             for (int c = 0; c < livinganimals.Count; c++)
             {
                 GameObject parent = livinganimals[c];
-                if (parent.transform.position.x < MAX_X && parent.transform.position.x > MIN_X && parent.transform.position.y < MAX_Y && parent.transform.position.y > MIN_Y)
+                if ((parent.transform.position.x < MAX_X) && (parent.transform.position.x > MIN_X) && (parent.transform.position.y < MAX_Y) && (parent.transform.position.y > MIN_Y))
                 {
                     if (parent.GetComponent<Animals>().readytochild)
                     {
@@ -127,6 +127,11 @@ public class AnimalSpawner : MonoBehaviour
                             parent.GetComponent<Animals>().readytochild = false;
                         }
                     }
+                }
+                else
+                {
+                    //livinganimals.RemoveAt(c);
+                    //Destroy(parent);
                 }
             }
         }
