@@ -13,7 +13,10 @@ public class Animals : MonoBehaviour
     public float moveTime = 5f;
     public float moveCounter;
     private float dieTimer = 0f;
-    private const float MAX_DIE = 1f;
+    private const float MAX_DIE = 5f;
+    private const float MAX_HUNGER = 5f;
+    private float hunger = MAX_HUNGER;
+
     public TileBase currentTile;
     public Vector3 previousTile;
     public GameObject senseRadius;
@@ -64,6 +67,7 @@ public class Animals : MonoBehaviour
         //eating scales off their foraging level
         food += m_foraging;
         SetRisk(false);
+        hunger = MAX_HUNGER;
 
         //Caps food using belly as the capacity
         if (food > m_belly)
@@ -79,12 +83,17 @@ public class Animals : MonoBehaviour
             gameManager = FindObjectOfType<GameManager>();
         }
         //Destroys animals that spend too much time in the wrong biome.
-        dieTimer -= dieTimer - Time.deltaTime;
+        dieTimer -= Time.deltaTime;
+        hunger -= Time.deltaTime;
         if (dieTimer <= 0f && dying)
         {
             print("animal died in biome");
             animalSpawner.livinganimals.Remove(gameObject);
             Destroy(gameObject);
+        }
+        if (hunger < 0 && food < 2)
+        {
+            SetRisk(true);
         }
         senseRadius.GetComponent<CircleCollider2D>().radius = m_sense + weatherSense;
 
@@ -113,9 +122,9 @@ public class Animals : MonoBehaviour
                 BodyCheck(m_animalWarmth, mapManager.getTileData(transform.position).weather, true);
 
 
-                if (LeavingBiome() && leftBiome)
+                if (LeavingBiome() && leftBiome && !riskyBoi)
                 {
-                    if (previousTile != null)
+                    if (previousTile != null && previousTile.x != transform.position.x && previousTile.y != transform.position.y)
                     {
                         //Target is the last position
                         Vector2 targ = previousTile;
