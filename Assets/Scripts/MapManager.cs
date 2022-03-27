@@ -18,6 +18,7 @@ public class MapManager : MonoBehaviour
 
     //public TileBase grassTile;
     private Dictionary<TileBase, TileData> dataFromTiles;
+    private Vector3 LastPos;
 
     private void Awake()
     {
@@ -96,9 +97,14 @@ public class MapManager : MonoBehaviour
         }
         else
         {
+            LastPos = pos;
             return dataFromTiles[tile];
         }
     }
 
+    public Vector3 PositionGetter()
+    {
+        return LastPos;
+    }
 
 }

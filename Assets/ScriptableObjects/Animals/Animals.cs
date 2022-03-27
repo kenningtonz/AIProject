@@ -15,6 +15,7 @@ public class Animals : MonoBehaviour
     private float dieTimer = 0f;
     private const float MAX_DIE = 1f;
     public TileBase currentTile;
+    public Vector3 previousTile;
     public GameObject senseRadius;
     
     public Sprite sprite;
@@ -22,7 +23,7 @@ public class Animals : MonoBehaviour
     public int m_speed;
     public int m_sense;
     public int m_belly;
-    public int m_foreging;
+    public int m_foraging;
 
     public Quaternion lookRotation;
     public int food;
@@ -44,7 +45,7 @@ public class Animals : MonoBehaviour
         m_speed = speed;
         m_sense = sense;
         m_belly = belly;
-        m_foreging = foregeing;
+        m_foraging = foregeing;
         m_animalWarmth = (Enums.AnimalWarmth)animalWarmth;
 
     }
@@ -60,14 +61,24 @@ public class Animals : MonoBehaviour
 
     public void eat()
     {
-        food = food + m_foreging;
+        //eating scales off their foraging level
+        food += m_foraging;
+        SetRisk(false);
+
+        //Caps food using belly as the capacity
+        if (food > m_belly)
+        {
+            food = m_belly;
+        }
     }
 
     private void Update()
     {
         if (gameManager == null)
+        {
             gameManager = FindObjectOfType<GameManager>();
-
+        }
+        //Destroys animals that spend too much time in the wrong biome.
         dieTimer -= dieTimer - Time.deltaTime;
         if (dieTimer <= 0f && dying)
         {
@@ -78,12 +89,13 @@ public class Animals : MonoBehaviour
         senseRadius.GetComponent<CircleCollider2D>().radius = m_sense + weatherSense;
 
         //Remove the buggy animals
-        if (mapManager.getTileData(transform.position).biome == "" || mapManager.getTileData(transform.position).tiles[0] == null || currentTile == null)
+        if (mapManager.getTileData(transform.position).biome == "" || mapManager.getTileData(transform.position).weather == Enums.Weather.Death || currentTile == null)
         {
             animalSpawner.livinganimals.Remove(gameObject);
             Destroy(gameObject);
         }
 
+        //Allows animals to move during the daytime.
         if (gameManager.itsDay == true)
         {
             moveCounter -= Time.deltaTime;
@@ -93,53 +105,72 @@ public class Animals : MonoBehaviour
                 moveCounter = moveTime;
                 lookRotation = Quaternion.Euler(0f, 0f, Random.Range(0f, 360f));
             }
-            transform.rotation = lookRotation;
-            transform.position += transform.up * Time.deltaTime * (m_speed + weatherSpeed) * direction;
 
-
+            //If the animal walks into a new biome, callthis
             if (mapManager.getTileData(transform.position).tiles[0] != currentTile)
             {
-                //if (mapManager.getTileData(transform.position).biome == "" || currentTile == null)
-                //{
-                //    animalSpawner.livinganimals.Remove(gameObject);
-                //    Destroy(gameObject);
-                //}
-                //else
-                //{
-                    currentTile = mapManager.getTileData(transform.position).tiles[0];
-                    //print(mapManager.getTileData(transform.position).biome);
+                //Setting speed according to the new biome.
+                BodyCheck(m_animalWarmth, mapManager.getTileData(transform.position).weather, true);
 
-                    BodyCheck(m_animalWarmth, mapManager.getTileData(transform.position).weather, true);
-                    if (LeavingBiome() && !leftBiome)
+
+                if (LeavingBiome() && leftBiome)
+                {
+                    if (previousTile != null)
                     {
-                        direction = -direction;
+                        //Target is the last position
+                        Vector2 targ = previousTile;
+
+                        //Measures distance between current and previous position
+                        targ.x = targ.x - transform.position.x;
+                        targ.y = targ.y - transform.position.y;
+
+                        //Gets angle between current and previous position, sets variables that system uses for this.
+                        float angle = Mathf.Atan2(targ.y, targ.x) * Mathf.Rad2Deg - 90;
+                        Quaternion q = Quaternion.AngleAxis(angle, Vector3.forward);
+                        lookRotation = q;
+                        moveCounter = 10;
                     }
-                    else if (!LeavingBiome() && leftBiome)
+                    else
                     {
+                        SetRisk(true);
                         leftBiome = false;
                     }
-                //}
+                }
+                else if (!LeavingBiome() && leftBiome)
+                {
+                    //Once they left, returns to status quo
+                    currentTile = mapManager.getTileData(transform.position).tiles[0];
+                    leftBiome = false;
+                }
+                else
+                {
+                    //Standard action if nothing is wrong
+                    currentTile = mapManager.getTileData(transform.position).tiles[0];
+                }
+            }
+            else
+            {
+                //Remembers this place just in case.
+                previousTile = mapManager.PositionGetter();
             }
 
+            transform.rotation = lookRotation;
+            transform.position += transform.up * Time.deltaTime * (m_speed + weatherSpeed) * direction;
         }
-
-        if (food > m_belly)
-        {
-            food = m_belly;
-        }
-
+        //
     }
 
     public void newDay()
     {
+        //If animals have more than one food they are able to have a baby, then eat one food.
         if (food > 1)
         {
             readytochild = true;
             food -= 1;
         }
 
-
-        if (food == 0)
+        //If animals end the day without eating, they die.
+        if (food <= 0)
         {
             animalSpawner.livinganimals.Remove(gameObject);
             print("death by food");
@@ -150,7 +181,7 @@ public class Animals : MonoBehaviour
 
     }
 
-    public bool EatFoodOutsideBiome(Enums.Weather weather)
+    public bool EatFoodOutsideBiome(GameObject snack)
     {
         int threshold = 0;
         //Threshold: Can/should I get this food?
@@ -159,18 +190,18 @@ public class Animals : MonoBehaviour
         //Am I starving? 6
         //5-: don't eat, 6+ eat
 
-        //Checks if they're faster than they can see
-        if (m_speed > (m_sense/ 2))
+        //Divides distance by speed to find the time it will take to get the snack, if it exceeds the death timer, they will not pursue.
+        if (MAX_DIE < (((snack.transform.position.x + snack.transform.position.y) - (transform.position.x + transform.position.y))/ m_speed))
         {
             threshold += 2;
         }
-        //Determines if they're hungry enough
+        //Determines if they're hungry enough(not enough to have a baby)
         if (food <= 1)
         {
             threshold += 4;
         }
         //Checks if the food is in a safe space, this is the BIAS
-        if (BodyCheck(m_animalWarmth, weather, false))
+        if (BodyCheck(m_animalWarmth, snack.GetComponent<Food>().weather, false))
         {
             threshold += 6;
         }
@@ -187,11 +218,13 @@ public class Animals : MonoBehaviour
         //If not, check if the place is safe.
         int threshold = 0;
 
+        //If theyre currently taking risks, they will go for the food and remain in the biome
         if (riskyBoi)
         {
             return false;
         }
-        if (!BodyCheck(m_animalWarmth, mapManager.getTileData(transform.position).weather, false))
+        //If theyre not taking risks and the biome is bad for them, returns true and actives the bool
+        else if (!BodyCheck(m_animalWarmth, mapManager.getTileData(transform.position).weather, false))
         {
             leftBiome = true;
             return true;
@@ -205,20 +238,24 @@ public class Animals : MonoBehaviour
 
     public bool BodyCheck(Enums.AnimalWarmth warmth, Enums.Weather weather, bool isEntering)
     {
+        //Biome against coat, identifies with specialist buff(specialists survive in less environments but have a better buff in their preferred biome)
         if ((warmth == Enums.AnimalWarmth.Fur && weather == Enums.Weather.Cold)
             || (warmth == Enums.AnimalWarmth.Scales && weather == Enums.Weather.Hot))
         {
             if (isEntering)
             {
+                //Applies buffs
                 weatherSense = 1;
                 weatherSpeed = 1;
                 dying = false;
             }
             else
             {
+                //Returns true to tell the system this biome is good.
                 return true;
             }
         }
+        //Biome against coat, identifies with standard(no buffs or debuffs)
         else if ((warmth == Enums.AnimalWarmth.Fur && weather == Enums.Weather.Chilly)
                    || (warmth == Enums.AnimalWarmth.Smooth && weather == Enums.Weather.Cold)
                     || (warmth == Enums.AnimalWarmth.Feathers && weather == Enums.Weather.Hot)
@@ -226,15 +263,18 @@ public class Animals : MonoBehaviour
         {
             if (isEntering)
             {
+                //Removes buffs or debuffs
                 weatherSense = 0;
                 weatherSpeed = 0;
                 dying = false;
             }
             else
             {
+                //Returns true to tell system biome is good.
                 return true;
             }
         }
+        //Biome against coat, identifies with debuff.
         else if ((warmth == Enums.AnimalWarmth.Smooth && weather == Enums.Weather.Warm)
             || (warmth == Enums.AnimalWarmth.Feathers && weather == Enums.Weather.Chilly))
         {
@@ -249,6 +289,7 @@ public class Animals : MonoBehaviour
                 return false;
             }
         }
+        //Biome against coat, identifies with buff
         else if ((warmth == Enums.AnimalWarmth.Feathers && weather == Enums.Weather.Warm)
           || (warmth == Enums.AnimalWarmth.Smooth && weather == Enums.Weather.Chilly))
         {
@@ -263,6 +304,7 @@ public class Animals : MonoBehaviour
                 return true;
             }
         }
+        //Remaining biomes are deadly to their respective coats.
         else
         {
             if (isEntering)
