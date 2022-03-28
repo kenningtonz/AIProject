@@ -1,11 +1,13 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
+
 public class Food : MonoBehaviour
 {
     private FoodSpawner foodSpawner;
     private MapManager mapManager;
     public Enums.Weather weather;
+    
 
     private void Start()
     {
@@ -19,8 +21,9 @@ public class Food : MonoBehaviour
     {
         if (collision.gameObject.tag == "Animal")
         {
+            //makes animal eat
             collision.gameObject.GetComponent<Animals>().eat();
-            // collision.gameObject.GetComponent<Animals>().food = collision.gameObject.GetComponent<Animals>().food + collision.gameObject.GetComponent<Animals>().m_foreging;
+           
             foodSpawner.availableFood.Remove(gameObject);
             collision.gameObject.GetComponent<Animals>().moveCounter = collision.gameObject.GetComponent<Animals>().moveTime;
             Destroy(gameObject);

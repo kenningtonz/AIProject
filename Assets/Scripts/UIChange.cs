@@ -6,14 +6,21 @@ public class UIChange : MonoBehaviour
     private MapManager mapManager;
     private GameManager gameManager;
     private FoodSpawner foodSpawner;
+    private AnimalSpawner animalSpawner;
+
+    public Text animalsBorn;
+    public Text animalsDied;
     // Start is called before the first frame update
     void Start()
     {
         mapManager = FindObjectOfType<MapManager>();
         gameManager = FindObjectOfType<GameManager>();
         foodSpawner = FindObjectOfType<FoodSpawner>();
+        animalSpawner = FindObjectOfType<AnimalSpawner>();
     }
 
+
+    //set biomes
     public void setBiome(Text biome)
     {
         if (biome.text == "Plains")
@@ -58,22 +65,17 @@ public class UIChange : MonoBehaviour
         foodSpawner.numOfFood = (int)slider.value;
     }
 
+    public void spawnAnimal()
+    {
+        animalSpawner.spawnAnimal = true;
+    }
+
+
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            gameManager.action = Enums.Action.Paint;
-        }
-        
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            gameManager.action = Enums.Action.Spawn;
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha4))
-        {
-            gameManager.action = Enums.Action.Nothing;
-        }
+        animalsBorn.text = animalSpawner.animalsborn.ToString();
+        animalsDied.text = animalSpawner.animalsdied.ToString();
     }
 }

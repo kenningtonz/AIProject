@@ -14,6 +14,9 @@ public class AnimalSpawner : MonoBehaviour
     public List<int> a_warmth;
     public List<GameObject> livinganimals;
 
+    public int animalsborn = 0;
+    public int animalsdied = 0;
+
     public int fertval;
     public int speedval;
     public int bellyval;
@@ -27,17 +30,18 @@ public class AnimalSpawner : MonoBehaviour
     private const int MAX_SENSE = 50;
     private const int MAX_FORGE = 50;
 
-    private int MAX_X = 20;
-    private int MIN_X = -9;
-    private int MAX_Y = 13;
-    private int MIN_Y = -11;
+    private int MAX_X = 29;
+    private int MIN_X = -29;
+    private int MAX_Y = 29;
+    private int MIN_Y = -29;
+
 
     public Sprite coatFur;
     public Sprite coatSmooth;
     public Sprite coatFeather;
     public Sprite coatScale;
 
-
+    public bool spawnAnimal = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -103,7 +107,7 @@ public class AnimalSpawner : MonoBehaviour
         if (gameManager == null)
             gameManager = FindObjectOfType<GameManager>();
 
-        if (Input.GetKeyDown(KeyCode.P))//&& gameManager.action == Enums.Action.Spawn)
+        if (spawnAnimal)//&& gameManager.action == Enums.Action.Spawn)
         {
             //Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
@@ -111,6 +115,7 @@ public class AnimalSpawner : MonoBehaviour
             int randY = Random.Range(MIN_Y, MAX_Y);
             GameObject animal = Instantiate(prefab, new Vector3(randX, randY, 0), Quaternion.identity);
             Debug.Log("spawn");
+            animalsborn++;
             //  animal.GetComponent<Animals>().init(Random.Range(1, 10), Random.Range(1, 10), 2, Random.Range(1, 10), Random.Range(1, 10), Random.Range(0, 3));
             fertval = Random.Range(1, 4);
             bellyval = 1 + Random.Range(1, 3);
@@ -131,7 +136,7 @@ public class AnimalSpawner : MonoBehaviour
             //a_foraging.Add(forgval);
             //a_warmth.Add(warmval);
             livinganimals.Add(animal);
-
+            spawnAnimal = false;
         }
         else if (gameManager.itsDay)
         {
@@ -142,6 +147,7 @@ public class AnimalSpawner : MonoBehaviour
                 {
                     if (parent.GetComponent<Animals>().readytochild)
                     {
+                        animalsborn++;
                         //Number of babies ranges between 1 and fertility level, the higher it is, the higher the chance of more babies,
                         //(if negative) the lower, the higher the chance of no babies.
                         int numberOfBabies = Random.Range(1, parent.GetComponent<Animals>().m_fertility);

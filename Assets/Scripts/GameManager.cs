@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,6 +9,9 @@ public class GameManager : MonoBehaviour
     private AnimalSpawner animalSpawner;
     public bool itsDay = false;
     public int gameSpeed = 1;
+
+    private float daytimeCounter;
+    private float daytimeMax;
 
     public Button newDayButton;
     public Toggle autoStartDay;
@@ -18,7 +23,9 @@ public class GameManager : MonoBehaviour
     {
         foodSpawner = FindObjectOfType<FoodSpawner>();
         animalSpawner = FindObjectOfType<AnimalSpawner>();
-        action = Enums.Action.Nothing;
+        // action = Enums.Action.Nothing;
+        
+        daytimeCounter = daytimeMax;
     }
 
     public void newDay()
@@ -35,10 +42,14 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        daytimeMax = 30f * gameSpeed;
+        daytimeCounter -= Time.deltaTime;
+
+     
      Time.timeScale = gameSpeed;
 
 
-        if (foodSpawner.availableFood.Count == 0)
+        if (foodSpawner.availableFood.Count == 0 || daytimeCounter < 0)
         {
             itsDay = false;
             newDayButton.interactable = true;
@@ -48,7 +59,7 @@ public class GameManager : MonoBehaviour
                 newDay();
             }
             //Debug.Log("day end");
-
+            daytimeCounter = daytimeMax;
         }
     }
 }

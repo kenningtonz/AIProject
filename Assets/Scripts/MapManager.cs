@@ -4,7 +4,7 @@ using UnityEngine.Tilemaps;
 
 public class MapManager : MonoBehaviour
 {
-
+    public bool isOverUI;
     public Enums.Biomes biome;
     public int brushsize;
     public GameManager gameManager;
@@ -39,6 +39,8 @@ public class MapManager : MonoBehaviour
         map.CompressBounds();
     }
 
+    
+    //paints tiles
     public void paint(Vector3Int pos, TileBase tile)
     {
         for (int x = -brushsize; x <= brushsize; x++)
@@ -63,30 +65,35 @@ public class MapManager : MonoBehaviour
 
         if (Input.GetMouseButton(0) && gameManager.action == Enums.Action.Paint)
         {
+            //gets postion
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
             Vector3Int gridpos = map.WorldToCell(mousePos);
 
-            switch (biome)
+            //swiches based on select biomes
+            if (!isOverUI)
             {
-                case Enums.Biomes.Plains:
-                    paint(gridpos, tiles[0]);
-                    break;
-                case Enums.Biomes.Snow:
-                    paint(gridpos, tiles[1]);
-                    break;
-                case Enums.Biomes.Sand:
-                    paint(gridpos, tiles[2]);
-                    break;
-                case Enums.Biomes.Forest:
-                    paint(gridpos, tiles[3]);
-                    break;
+                switch (biome)
+                {
+                    case Enums.Biomes.Plains:
+                        paint(gridpos, tiles[0]);
+                        break;
+                    case Enums.Biomes.Snow:
+                        paint(gridpos, tiles[1]);
+                        break;
+                    case Enums.Biomes.Sand:
+                        paint(gridpos, tiles[2]);
+                        break;
+                    case Enums.Biomes.Forest:
+                        paint(gridpos, tiles[3]);
+                        break;
+                }
             }
-
-
+            
         }
     }
 
+    //gets tiledata
     public TileData getTileData(Vector3 pos)
     {
         Vector3Int gridpos = map.WorldToCell(pos);
@@ -102,6 +109,7 @@ public class MapManager : MonoBehaviour
         }
     }
 
+    //gets positon of tile
     public Vector3 PositionGetter()
     {
         return LastPos;

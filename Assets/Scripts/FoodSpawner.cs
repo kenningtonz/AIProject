@@ -15,19 +15,16 @@ public class FoodSpawner : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            // spawnFood(3);
-        }
     }
 
     public void spawnFood()
     {
+        //spawns food
         Debug.Log("foodspawned");
         for (int i = 0; i < numOfFood; i++)
         {
-            int randX = Random.Range(-8, 20);
-            int randY = Random.Range(-11, 13);
+            int randX = Random.Range(-28, 28);
+            int randY = Random.Range(-28, 28);
             GameObject newfood = Instantiate(prefab, new Vector3(randX, randY, 0), Quaternion.identity);
             availableFood.Add(newfood);
         }
