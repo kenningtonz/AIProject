@@ -166,7 +166,7 @@ public class Animals : MonoBehaviour
                     currentTile = mapManager.getTileData(transform.position).tiles[0];
                 }
             }
-            else
+            else if (BodyCheck(m_animalWarmth, mapManager.getTileData(transform.position).weather, true));
             {
                 //Remembers this place just in case.
                 previousTile = mapManager.PositionGetter();
@@ -210,7 +210,7 @@ public class Animals : MonoBehaviour
         //5-: don't eat, 6+ eat
 
         //Divides distance by speed to find the time it will take to get the snack, if it exceeds the death timer, they will not pursue.
-        if (MAX_DIE < (((snack.transform.position.x + snack.transform.position.y) - (transform.position.x + transform.position.y))/ m_speed))
+        if ((MAX_DIE * 2) > (((snack.transform.position.x + snack.transform.position.y) - (transform.position.x + transform.position.y))/ m_speed))
         {
             threshold += 2;
         }
