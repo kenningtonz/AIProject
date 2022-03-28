@@ -94,7 +94,7 @@ public class AnimalSpawner : MonoBehaviour
         if (speedval < 0)
             alphaVal = 0;
 
-        return new Color32((byte)(colourMod * alphaVal * (255 / MAX_SPEED)), (byte)(colourMod * greenVal * (255 / MAX_FORGE)), (byte)(colourMod * blueVal * (255 / MAX_BELLY)), (byte)(255 - (redVal * (100 / MAX_FERT))));
+        return new Color32((byte)(colourMod * alphaVal * (255 / MAX_SPEED)), (byte)(colourMod * greenVal * (255 / MAX_FORGE)), (byte)(colourMod * blueVal * (255 / MAX_BELLY)), (byte)(155 + (redVal * (100 / MAX_FERT))));
     }
 
     // Update is called once per frame
