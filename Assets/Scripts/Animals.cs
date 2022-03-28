@@ -1,3 +1,7 @@
+//Final Project AI
+//Kennedy Adams 100632983
+//Dylan Brush 100700305
+//Maija Kinnunen 100697620
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -301,7 +305,7 @@ public class Animals : MonoBehaviour
             }
             else
             {
-                return false;
+                return true;
             }
         }
         //Biome against coat, identifies with buff
@@ -324,8 +328,8 @@ public class Animals : MonoBehaviour
         {
             if (isEntering)
             {
+                dieTimer = MAX_DIE * gameManager.gameSpeed;
                 dying = true;
-                dieTimer = MAX_DIE;
             }
             else
             {

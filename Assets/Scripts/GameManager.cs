@@ -1,3 +1,7 @@
+//Final Project AI
+//Kennedy Adams 100632983
+//Dylan Brush 100700305
+//Maija Kinnunen 100697620
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -42,7 +46,7 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        daytimeMax = 30f * gameSpeed;
+        daytimeMax = 15f * gameSpeed;
         daytimeCounter -= Time.deltaTime;
 
      

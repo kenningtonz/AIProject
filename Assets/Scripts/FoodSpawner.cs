@@ -1,3 +1,8 @@
+//Final Project AI
+//Kennedy Adams 100632983
+//Dylan Brush 100700305
+//Maija Kinnunen 100697620
+
 using System.Collections.Generic;
 using UnityEngine;
 
